@@ -1,0 +1,7 @@
+transformers==4.10.3
+
+
+
+# Metaprogramming stuff
+pytest==6.2.5
+black==21.9b0
