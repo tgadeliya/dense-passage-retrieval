@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 import typing as T
-import faiss
-import torch
-import tqdm
-import torch
-from transformers import PreTrainedTokenizer
+from collections import namedtuple
 
+import torch
+from torch.utils.data import Dataset
+
+QAPair = namedtuple("QAPair", ["question", "pair"])
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-
 
 @dataclass
 class DPRInput:
@@ -15,30 +14,36 @@ class DPRInput:
     passages: T.List
 
 
-def build_faiss_index_given_encedor_and_passages(
-    passages, encoder, dim=768, index_type=faiss.IndexFlatL2
-):
-    assert (
-        encoder.config.hidden_size == dim
-    ), f"Encoder representation dimensions and dim={dim}"
-    index = index_type()
+@dataclass
+class DPRRetrieverInput:
+    questions: T.List[str]
+    answers: T.List[str]
 
 
-def convert_passages_into_representation_matrix(
-    passages, encoder, tokenizer: PreTrainedTokenizer
-):
-    num_pasages, repr_dim = len(passages), encoder.config.hidden_size
-    padding_len = tokenizer.model_max_length
+@dataclass
+class DPRReaderInput:
+    pass
 
-    representation_matrix = torch.empty(
-        (num_pasages, repr_dim), dtype=torch.float32, device=DEVICE
-    )
-    tokenized_input_ids = torch.empty((num_pasages, padding_len))
 
-    for i in tqdm(range(len(passages)), desc="Tokenize and perform forward pass for every passage"):
-        tokenized_input_ids[i, :] = tokenizer(
-            passages[i], padding=True, return_length=512, return_tensors="pt"
-        )["input_ids"]
-        representation_matrix[i, :] = encoder(input_ids=tokenized_input_ids[i])
+@dataclass
+class DPRReaderInput:
+    pass
 
-    return
+class PolEvalQA(Dataset):
+    def __init__(self):
+        answer_path = "/Users/tsimur.hadeliya/code/repos/DRP/data/PolEvalQA/dev-0/expected.tsv"
+        question_path = "/Users/tsimur.hadeliya/code/repos/DRP/data/PolEvalQA/dev-0/in.tsv"
+        self.question = self.read_files(question_path)
+        self.answer = self.read_files(answer_path)
+        assert len(self.question) == len(self.answer)
+        self.len = len(self.question)
+
+    @staticmethod
+    def read_files(path):
+        return open(path).read().splitlines()
+
+    def __getitem__(self, idx):
+        return QAPair(
+            question=self.question[idx],
+            answer=self.answer[idx]
+        )
