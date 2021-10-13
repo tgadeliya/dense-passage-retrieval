@@ -1,6 +1,6 @@
 
 run_tests:
-	pytest -q
+	pytest --ignore=./faiss
 
 run_black:
 	python -m black dpr
