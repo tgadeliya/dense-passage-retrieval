@@ -1,6 +1,5 @@
 transformers==4.10.3
-
-
+gcsfs==2021.10.0
 
 # Metaprogramming stuff
 pytest==6.2.5
