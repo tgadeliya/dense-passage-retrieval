@@ -1,17 +1,26 @@
 import typing as T
 from dataclasses import dataclass
+from math import ceil
+import logging
 
+import faiss
+from tqdm import tqdm
+import numpy as np
 import torch
 from torch.nn import Module
 
+from dpr import Encoder
+from dpr.utils import cp_from_gcs_to_local
+
+logger = logging.getLogger()
 
 @dataclass
-class DPRRetrieverInput:
+class RetrieverInput:
     questions: T.List[str]
     answers: T.List[str]
+    # TODO: Add len() assert
 
-
-class DPRRetriever(Module):
+class NeuralRetriever(Module):
     def __init__(
         self,
         question_encoder: Encoder,
@@ -24,11 +33,10 @@ class DPRRetriever(Module):
         self.answer_encoder = answer_encoder
         self.top_k = top_k
 
-    def forward(self, batch: DPRRetrieverInput):
+    def forward(self, batch: RetrieverInput):
         questions = self.question_encoder(batch.questions)  # [bs, hidden_size]
         answers = self.answer_encoder(batch.answers)  # [bs, hidden_size]
         loss = self.calculate_loss(questions, answers)
-        # TODO: Add returning subclass of transformers ModelOutput
         return {"loss": loss}
 
     @staticmethod
