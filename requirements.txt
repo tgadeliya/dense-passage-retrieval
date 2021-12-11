@@ -1,7 +1,0 @@
-gcsfs==2021.10.0
-pytorch-lightning==1.2.5
-transformers==3.3.1
-
-# Metaprogramming stuff
-pytest==6.2.5
-black==21.9b0
