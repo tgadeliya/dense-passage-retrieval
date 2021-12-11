@@ -48,8 +48,7 @@ class PolEvalQADataModule(pl.LightningDataModule):
             self.train_dataset = self.dataset
 
     def train_dataloader(self, *args, **kwargs) -> DataLoader:
-        return DataLoader(dataset=self.dataset)
+        return DataLoader(dataset=PolEvalQA())
 
     def val_dataloader(self, *args, **kwargs) -> DataLoader:
-        return DataLoader(dataset=self.dataset)
-
+        return DataLoader(dataset=PolEvalQA())

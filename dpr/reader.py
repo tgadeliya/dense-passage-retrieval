@@ -1,26 +1,25 @@
-
 import torch
 from dpr import Encoder
 
+from torch.nn import Module
 
 
-
-
-class DPRReader:
+class DPRReader(Module):
     def __init__(
         self,
         span_prediction_model: Encoder,
         num_sampled_passages: int = 24,
     ):
+        super().__init__()
         self.num_sampled_passages = num_sampled_passages
         self.encoder: Encoder = span_prediction_model
         # output start and end token
         self.span_classifier = torch.nn.Linear(
-            self.span_prediction.config.hidden_size, 2
+            self.encoder.config.hidden_size, 2
         )
         # output selected passage
         self.selected_classifier = torch.nn.Linear(
-            self.span_prediction.config.hidden_size, 1
+            self.encoder.config.hidden_size, 1
         )
         self.softmax = torch.nn.Softmax(dim=-1)
 

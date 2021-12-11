@@ -14,11 +14,13 @@ from dpr.utils import cp_from_gcs_to_local
 
 logger = logging.getLogger()
 
+
 @dataclass
 class RetrieverInput:
     questions: T.List[str]
     answers: T.List[str]
     # TODO: Add len() assert
+
 
 class NeuralRetriever(Module):
     def __init__(
@@ -27,6 +29,7 @@ class NeuralRetriever(Module):
         answer_encoder: Encoder,
         top_k: int = 20,
     ):
+        super().__init__()
         self.source_passage_index: T.Optional[faiss.IndexFlatL2] = None
 
         self.question_encoder = question_encoder
