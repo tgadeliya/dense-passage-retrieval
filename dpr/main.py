@@ -5,5 +5,7 @@ from dataset import PolEvalQADataModule
 if __name__ == "__main__":
     model = DensePassageRetrieval()
     PolEvalQA: pl.LightningDataModule = PolEvalQADataModule
-    trainer = pl.Trainer()
+    trainer = pl.Trainer(
+        fast_dev_run=True
+    )
     trainer.fit(model, PolEvalQA)
