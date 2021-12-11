@@ -1,3 +1,3 @@
 from encoder import Encoder
-from reader import  DPRReader
-from retriever import  DPRRetriever
+from reader import DPRReader
+from retriever import NeuralRetriever
