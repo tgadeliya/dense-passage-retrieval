@@ -1,7 +1,8 @@
-from dataset import PolEvalQA, QAPair
+from dpr.dataset import  PolEvalQA, QAPair
 
-from torch.utils.data import DataLoader
 import pytest
+from torch.utils.data import DataLoader
+
 
 
 def test_polevalqa_output():

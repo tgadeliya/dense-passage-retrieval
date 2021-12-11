@@ -5,7 +5,7 @@ import pytest
 import transformers.modeling_outputs
 from transformers import AutoModel, AutoTokenizer
 
-from model import Encoder, cp_from_gcs_to_local, DPRRetriever
+from dpr.model import Encoder, cp_from_gcs_to_local, DPRRetriever
 
 
 def test_pytest():
