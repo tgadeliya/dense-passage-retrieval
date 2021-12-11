@@ -3,7 +3,7 @@ from pytest import fixture
 
 from transformers import AutoModel, AutoTokenizer
 
-from dpr import Encoder, DPRRetriever
+from dpr import Encoder, NeuralRetriever
 
 
 def test_building_faiss_index():
@@ -14,7 +14,7 @@ def test_building_faiss_index():
         representation_type="CLS",
     )
     text = ["asdasdlask;d", "asdasd", "asdpqokpqwd", "asdpqpwpqpwe21"]
-    index = DPRRetriever.build_faiss_index_given_encoder_and_passages(
+    index = NeuralRetriever.build_faiss_index_given_encoder_and_passages(
         passages=text,
         encoder=encoder,
         dim=encoder.config.hidden_size,
