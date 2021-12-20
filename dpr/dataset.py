@@ -29,13 +29,16 @@ class PolEvalQA(Dataset):
         return open(path).read().splitlines()
 
     def __getitem__(self, idx: int):
-        return QAPair(question=self.question[idx], answer=self.answer[idx])
+        return {
+            "question": self.question[idx],
+            "answer": self.answer[idx]
+        }
 
     def __len__(self):
         return self.num_pairs
 
 
-class PolEvalQADataModule(pl.LightningDataModule):
+class QADataModule(pl.LightningDataModule):
     def __init__(self):
         super().__init__()
         self.dataset = PolEvalQA()
@@ -48,7 +51,7 @@ class PolEvalQADataModule(pl.LightningDataModule):
             self.train_dataset = self.dataset
 
     def train_dataloader(self, *args, **kwargs) -> DataLoader:
-        return DataLoader(dataset=PolEvalQA())
+        return DataLoader(dataset=PolEvalQA(), batch_size=4, num_workers=0)
 
     def val_dataloader(self, *args, **kwargs) -> DataLoader:
-        return DataLoader(dataset=PolEvalQA())
+        return DataLoader(dataset=PolEvalQA(), batch_size=4, num_workers=0)
