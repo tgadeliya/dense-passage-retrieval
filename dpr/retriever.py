@@ -4,6 +4,7 @@ from math import ceil
 import logging
 
 import faiss
+from faiss import IndexFlatL2
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -38,19 +39,9 @@ class NeuralRetriever(Module):
 
     def forward(self, batch: RetrieverInput):
         questions = self.question_encoder(batch.questions)  # [bs, hidden_size]
-        answers = self.answer_encoder(batch.answers)  # [bs, hidden_size]
-        loss = self.calculate_loss(questions, answers)
-        return {"loss": loss}
+        # TODO: return retrieved passages
+        return 1
 
-    @staticmethod
-    def calculate_loss(question_matrix, answer_matrix):
-        """
-        Loss for in-batch negatives
-        """
-        sim_matrix = torch.matmul(question_matrix, answer_matrix.T)
-        sim_matrix = np.exp(sim_matrix)
-        nll_loss = -torch.log(sim_matrix.diag() / sim_matrix.sum(dim=1))
-        return nll_loss
 
     def add_source_passage_for_inference(
         self, source_passages: T.Union[T.List[str], str]
@@ -58,7 +49,7 @@ class NeuralRetriever(Module):
         # TODO: Add tests
         if type(source_passages) is str:
             logger.info(
-                "get source_passages as type str. Assuming, this is the link to already build index."
+                "get source_passages as type str. Assuming, this is the link to already builded index."
             )
             source_passages = (
                 cp_from_gcs_to_local(source_passages)
@@ -66,9 +57,12 @@ class NeuralRetriever(Module):
                 else source_passages
             )
             builded_index = faiss.read_index(source_passages)
+        elif isinstance(source_passages, IndexFlatL2):
+            logger.info("Using already prepared index object")
+            builded_index = source_passages
         else:
             logger.info("Building source index from given passages")
-            prepared_source_index = self.build_faiss_index_given_encoder_and_passages(
+            builded_index = self.build_faiss_index_given_encoder_and_passages(
                 source_passages,
                 self.answer_encoder,
             )
