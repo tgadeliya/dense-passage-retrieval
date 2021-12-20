@@ -1,6 +1,7 @@
 import pytest
 from pytest import fixture
 
+import transformers
 from transformers import AutoModel, AutoTokenizer
 
 from dpr import Encoder
@@ -49,8 +50,6 @@ def test_encoder_valid_representation_type(representation_type):
     reader = Encoder(
         base_encoder=model, tokenizer=tokenizer, representation_type=representation_type
     )
-
-
 
 
 @pytest.mark.skip("Skipping proper repr type")
