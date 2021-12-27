@@ -35,7 +35,6 @@ class NeuralRetriever(Module):
 
         self.question_encoder = question_encoder
         self.answer_encoder = answer_encoder
-        self.top_k = top_k
 
     def forward(self, batch: RetrieverInput):
         questions = self.question_encoder(batch.questions)  # [bs, hidden_size]
